@@ -65,3 +65,28 @@ void Track::removeClip(Track::Clip* clipToRemove)
         sendChangeMessage();
     }
 }
+
+void Track::setHeight(int newHeight)
+{
+    newHeight = juce::jlimit(minHeight, maxHeight, newHeight);
+    if (height != newHeight)
+    {
+        height = newHeight;
+        sendChangeMessage();
+    }
+}
+
+void Track::setHeightMultiplier(float multiplier)
+{
+    multiplier = juce::jlimit(minHeightMultiplier, maxHeightMultiplier, multiplier);
+    if (heightMultiplier != multiplier)
+    {
+        heightMultiplier = multiplier;
+        sendChangeMessage();
+    }
+}
+
+int Track::getCalculatedHeight() const
+{
+    return static_cast<int>(height * heightMultiplier);
+}

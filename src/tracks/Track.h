@@ -48,6 +48,22 @@ public:
     // Visual properties
     juce::Colour getColour() const { return colour; }
     void setColour(const juce::Colour& newColour) { colour = newColour; sendChangeMessage(); }
+    
+    // Track height management
+    int getHeight() const { return height; }
+    void setHeight(int newHeight);
+    
+    // Height multiplier support
+    float getHeightMultiplier() const { return heightMultiplier; }
+    void setHeightMultiplier(float multiplier);
+    int getCalculatedHeight() const;
+    
+    static constexpr int minHeight = 40;
+    static constexpr int maxHeight = 400;
+    static constexpr int defaultHeight = 60;
+    static constexpr float minHeightMultiplier = 0.5f;
+    static constexpr float maxHeightMultiplier = 3.0f;
+    static constexpr float defaultHeightMultiplier = 1.0f;
 
 private:
     juce::String name;
@@ -63,6 +79,8 @@ private:
     
     // Visual properties
     juce::Colour colour;
+    int height = defaultHeight;
+    float heightMultiplier = defaultHeightMultiplier;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

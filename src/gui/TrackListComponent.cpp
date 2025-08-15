@@ -84,11 +84,14 @@ void TrackListComponent::updateLayout()
 {
     auto bounds = getLocalBounds();
     
-    int trackHeight = 120;
     int y = 40;  // Leave space for header
     
-    for (auto* panel : trackPanels)
+    for (int i = 0; i < trackPanels.size(); ++i)
     {
+        auto* panel = trackPanels[i];
+        auto* track = tracks[i];
+        
+        int trackHeight = track->getHeight();
         panel->setBounds(bounds.removeFromTop(trackHeight).reduced(2));
         y += trackHeight;
     }

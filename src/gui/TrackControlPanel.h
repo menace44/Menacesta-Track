@@ -24,6 +24,7 @@ private:
     juce::Label trackNameLabel;
     juce::Slider volumeSlider;
     juce::Slider panSlider;
+    juce::Slider heightSlider;
     juce::TextButton muteButton;
     juce::TextButton soloButton;
     juce::TextButton recordButton;

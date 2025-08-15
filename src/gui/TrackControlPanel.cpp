@@ -3,7 +3,8 @@
 TrackControlPanel::TrackControlPanel(Track* trackToControl)
     : track(trackToControl),
       volumeSlider(juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::TextBoxBelow),
-      panSlider(juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::TextBoxBelow)
+      panSlider(juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::TextBoxBelow),
+      heightSlider(juce::Slider::LinearVertical, juce::Slider::TextBoxBelow)
 {
     jassert(track != nullptr);
     
@@ -30,6 +31,15 @@ TrackControlPanel::TrackControlPanel(Track* trackToControl)
     panSlider.setTextValueSuffix(" L/R");
     panSlider.addListener(this);
     addAndMakeVisible(panSlider);
+
+    // Configure height slider
+    heightSlider.setRange(0.5, 3.0, 0.1);
+    heightSlider.setValue(track->getHeightMultiplier(), juce::dontSendNotification);
+    heightSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
+    heightSlider.setSliderStyle(juce::Slider::LinearVertical);
+    heightSlider.setTextValueSuffix("x");
+    heightSlider.addListener(this);
+    addAndMakeVisible(heightSlider);
     
     // Configure buttons
     muteButton.setButtonText("M");
@@ -90,6 +100,10 @@ void TrackControlPanel::resized()
     // Pan slider
     auto panArea = bounds.removeFromTop(80).reduced(5);
     panSlider.setBounds(panArea);
+
+    // Height slider
+    auto heightArea = bounds.removeFromTop(100).reduced(5);
+    heightSlider.setBounds(heightArea);
     
     // Buttons at bottom
     auto buttonArea = bounds.removeFromBottom(40).reduced(5);
@@ -117,6 +131,10 @@ void TrackControlPanel::sliderValueChanged(juce::Slider* slider)
     else if (slider == &panSlider)
     {
         track->setPan((float)slider->getValue());
+    }
+    else if (slider == &heightSlider)
+    {
+        track->setHeightMultiplier((float)slider->getValue());
     }
 }
 
@@ -148,6 +166,7 @@ void TrackControlPanel::updateDisplay()
 {
     volumeSlider.setValue(track->getVolume(), juce::dontSendNotification);
     panSlider.setValue(track->getPan(), juce::dontSendNotification);
+    heightSlider.setValue(track->getHeightMultiplier(), juce::dontSendNotification);
     muteButton.setToggleState(track->isMuted(), juce::dontSendNotification);
     soloButton.setToggleState(track->isSolo(), juce::dontSendNotification);
 }

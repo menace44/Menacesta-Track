@@ -23,6 +23,7 @@ TrackLaneComponent::TrackLaneComponent(Track& track, TimelineViewport& viewport)
     addAndMakeVisible(timelineTrack);
     
     viewport.addChangeListener(this);
+    track.addChangeListener(this);
     
     updateTrackColor();
 }
@@ -30,6 +31,7 @@ TrackLaneComponent::TrackLaneComponent(Track& track, TimelineViewport& viewport)
 TrackLaneComponent::~TrackLaneComponent()
 {
     viewport.removeChangeListener(this);
+    track.removeChangeListener(this);
 }
 
 void TrackLaneComponent::paint(juce::Graphics& g)
@@ -69,6 +71,12 @@ void TrackLaneComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
 {
     if (source == &viewport)
     {
+        repaint();
+    }
+    else if (source == &track)
+    {
+        // Track properties changed, update height
+        setSize(getWidth(), track.getCalculatedHeight());
         repaint();
     }
 }
