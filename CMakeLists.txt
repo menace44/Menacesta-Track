@@ -4,8 +4,8 @@ project(CrossPlatformJUCEDAW)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find JUCE package
-find_package(JUCE CONFIG REQUIRED)
+# Add JUCE as a subdirectory
+add_subdirectory(JUCE)
 
 # Create the main executable
 juce_add_plugin(CrossPlatformJUCEDAW
@@ -26,6 +26,9 @@ target_sources(CrossPlatformJUCEDAW PRIVATE
     src/plugins/PluginManager.cpp
     src/recording/Recorder.cpp
     src/tracks/Track.cpp
+    src/mixing/Mixer.cpp
+    src/mixing/ChannelStrip.cpp
+    src/mixing/MasterBus.cpp
     src/gui/MainComponent.cpp
     src/gui/TransportControls.cpp
     src/gui/TimelineComponent.cpp
@@ -34,6 +37,10 @@ target_sources(CrossPlatformJUCEDAW PRIVATE
     src/tests/AudioEngineTest.cpp
     src/tests/TestRunner.cpp
     src/examples/AudioEngineDemo.cpp
+    src/effects/Effect.cpp
+    src/effects/ReverbEffect.cpp
+    src/effects/EQEffect.cpp
+    src/effects/DelayEffect.cpp
 )
 
 # Header files
@@ -50,6 +57,10 @@ target_sources(CrossPlatformJUCEDAW PRIVATE
     src/gui/TimelineComponent.h
     src/gui/TrackListComponent.h
     src/gui/TrackControlPanel.h
+    src/effects/Effect.h
+    src/effects/ReverbEffect.h
+    src/effects/EQEffect.h
+    src/effects/DelayEffect.h
 )
 
 # Link JUCE modules
