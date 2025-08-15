@@ -12,6 +12,8 @@ TransportControls::TransportControls(Transport* transportToUse)
     addAndMakeVisible(recordButton);
     addAndMakeVisible(rewindButton);
     addAndMakeVisible(fastForwardButton);
+    addAndMakeVisible(addTrackButton);
+    addAndMakeVisible(removeTrackButton);
     
     addAndMakeVisible(positionLabel);
     addAndMakeVisible(tempoLabel);
@@ -21,6 +23,8 @@ TransportControls::TransportControls(Transport* transportToUse)
     recordButton.onClick = [this] { recordButtonClicked(); };
     rewindButton.onClick = [this] { rewindButtonClicked(); };
     fastForwardButton.onClick = [this] { fastForwardButtonClicked(); };
+    addTrackButton.onClick = [this] { addTrackButtonClicked(); };
+    removeTrackButton.onClick = [this] { removeTrackButtonClicked(); };
     
     positionLabel.setText("0:00.000", juce::dontSendNotification);
     positionLabel.setJustificationType(juce::Justification::centred);
@@ -64,6 +68,12 @@ void TransportControls::resized()
     x += buttonWidth + spacing;
     
     fastForwardButton.setBounds(x, y, buttonWidth, buttonHeight);
+    x += buttonWidth + spacing;
+    
+    addTrackButton.setBounds(x, y, buttonWidth, buttonHeight);
+    x += buttonWidth + spacing;
+    
+    removeTrackButton.setBounds(x, y, buttonWidth, buttonHeight);
     
     positionLabel.setBounds(bounds.getWidth() - 200, y, 150, buttonHeight);
     tempoLabel.setBounds(bounds.getWidth() - 350, y, 100, buttonHeight);
