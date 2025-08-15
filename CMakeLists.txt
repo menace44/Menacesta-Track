@@ -29,6 +29,7 @@ target_sources(CrossPlatformJUCEDAW PRIVATE
     src/mixing/Mixer.cpp
     src/mixing/ChannelStrip.cpp
     src/mixing/MasterBus.cpp
+    src/project/ProjectManager.cpp
     src/gui/MainComponent.cpp
     src/gui/TransportControls.cpp
     src/gui/TimelineComponent.cpp
@@ -52,6 +53,8 @@ target_sources(CrossPlatformJUCEDAW PRIVATE
     src/plugins/PluginManager.h
     src/recording/Recorder.h
     src/tracks/Track.h
+    src/project/ProjectManager.h
+    src/project/Project.h
     src/gui/MainComponent.h
     src/gui/TransportControls.h
     src/gui/TimelineComponent.h
