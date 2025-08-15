@@ -1,50 +1,36 @@
-# DAW Development TODO
+# Variable Track Heights Implementation - TODO
 
-## ✅ Completed Tasks
-- [x] Set up basic JUCE project structure with CMake
-- [x] Create AudioEngine with device management
-- [x] Implement basic Transport controls (play, stop, record)
-- [x] Create Track and Clip data structures
-- [x] Add MIDI handling capabilities
-- [x] Implement plugin management system
-- [x] Add recording functionality
-- [x] Create TimelineComponent with basic visualization
-- [x] **Implement ClipComponent with drag-and-drop functionality** - ✅ COMPLETED
-  - [x] Create ClipComponent class for visual representation of audio clips
-  - [x] Add drag-and-drop support for clip manipulation
-  - [x] Integrate with TimelineComponent for seamless clip management
-  - [x] Add selection and snapping features for precise editing
-  - [x] Include waveform display capabilities
-  - [x] Support for undo/redo operations with UndoManager
-  - [x] Add clipboard operations with ClipboardManager
-  - [x] Implement snap-to-grid functionality with SnapGrid
-  - [x] Add visual feedback for drag operations and selections
-  - [x] Integrate with existing Track and Clip data structures
+## Phase 1: Core Track Enhancement
+- [x] Add height property to Track class
+- [x] Add height multiplier property (1.0 = normal, 2.0 = double height, etc.)
+- [x] Add methods to get calculated height based on multiplier
+- [x] Update TrackLaneComponent to use calculated heights
 
-## 🔄 In Progress
-- [ ] Add audio file import functionality
-- [ ] Implement basic mixing capabilities
-- [ ] Create plugin chain system
-- [ ] Add automation lanes
+## Phase 2: UI Controls
+- [ ] Add height adjustment controls to TrackControlPanel
+- [ ] Create visual height indicators in track headers
+- [ ] Add mouse drag support for height adjustment
+- [ ] Implement height reset functionality
 
-## 📋 Upcoming Tasks
-- [ ] Implement audio playback engine
-- [ ] Add VST plugin support
-- [ ] Create mixer interface
-- [ ] Add export functionality
-- [ ] Implement project save/load
-- [ ] Add keyboard shortcuts
-- [ ] Create preferences/settings panel
-- [ ] Add audio effects processing
-- [ ] Implement time-stretching and pitch-shifting
-- [ ] Add MIDI editing capabilities
-- [ ] Create plugin GUI hosting
-- [ ] Add multi-track recording
-- [ ] Implement loop recording
-- [ ] Create metronome functionality
-- [ ] Add audio analysis tools (spectrum, waveform)
-- [ ] Implement project templates
-- [ ] Add undo/redo system improvements
-- [ ] Create plugin preset management
-- [ ] Add audio routing matrix
-- [ ] Implement sidechain capabilities
+## Phase 3: Timeline Integration
+- [ ] Update TimelineViewport to handle variable track heights
+- [ ] Ensure proper scrolling with variable heights
+- [ ] Update TimelineGrid to align with variable track positions
+- [ ] Update selection and drag operations for variable heights
+
+## Phase 4: Persistence
+- [ ] Save track heights in project file
+- [ ] Load track heights from project file
+- [ ] Add default height settings in preferences
+
+## Phase 5: Polish
+- [ ] Add smooth animations for height changes
+- [ ] Add visual feedback during height adjustment
+- [ ] Add keyboard shortcuts for height adjustment
+- [ ] Add context menu for height options
+
+## Phase 6: Testing
+- [ ] Test with different track types
+- [ ] Test height persistence across sessions
+- [ ] Test with large numbers of tracks
+- [ ] Test performance with extreme height variations
