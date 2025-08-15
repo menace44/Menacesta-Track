@@ -1,0 +1,10 @@
+^C:\USERS\MENAC\MENACESTA TRACK\BUILD\JUCE\TOOLS\CMAKEFILES\5F9C456169944BFE67128488A3D427AD\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Python313\Lib\site-packages\cmake\data\bin\cmake.exe" "-SC:/Users/menac/Menacesta Track/JUCE" "-BC:/Users/menac/Menacesta Track/build/JUCE/tools" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/menac/Menacesta Track/build/JUCE/tools/JUCE.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

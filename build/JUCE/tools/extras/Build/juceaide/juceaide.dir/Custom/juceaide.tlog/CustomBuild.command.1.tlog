@@ -1,0 +1,10 @@
+^C:\USERS\MENAC\MENACESTA TRACK\JUCE\EXTRAS\BUILD\JUCEAIDE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Python313\Lib\site-packages\cmake\data\bin\cmake.exe" "-SC:/Users/menac/Menacesta Track/JUCE" "-BC:/Users/menac/Menacesta Track/build/JUCE/tools" --check-stamp-file "C:/Users/menac/Menacesta Track/build/JUCE/tools/extras/Build/juceaide/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

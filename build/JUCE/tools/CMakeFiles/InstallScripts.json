@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/menac/Menacesta Track/build/JUCE/tools/cmake_install.cmake",
+		"C:/Users/menac/Menacesta Track/build/JUCE/tools/modules/cmake_install.cmake",
+		"C:/Users/menac/Menacesta Track/build/JUCE/tools/extras/Build/cmake_install.cmake",
+		"C:/Users/menac/Menacesta Track/build/JUCE/tools/extras/Build/juceaide/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

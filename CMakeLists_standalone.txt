@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 3.15)
+project(MenacestaTrackStandalone)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Add executable for standalone version
+add_executable(menacesta_track_standalone
+    src/simple_mixer_standalone.cpp
+)
+
+# Platform-specific settings
+if(WIN32)
+    set_target_properties(menacesta_track_standalone PROPERTIES
+        WIN32_EXECUTABLE TRUE
+    )
+endif()
+
+# Compiler-specific flags
+if(MSVC)
+    target_compile_options(menacesta_track_standalone PRIVATE /W4)
+else()
+    target_compile_options(menacesta_track_standalone PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+# Install target
+install(TARGETS menacesta_track_standalone
+    RUNTIME DESTINATION bin
+)
