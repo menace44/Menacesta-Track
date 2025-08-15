@@ -1,6 +1,11 @@
 #pragma once
 #include <JuceHeader.h>
 #include "../transport/Transport.h"
+#include "../tracks/Track.h"
+#include "../tracks/Clip.h"
+#include "timeline/TimelineViewport.h"
+#include "timeline/TimelineRuler.h"
+#include "timeline/TrackLaneComponent.h"
 
 class TimelineComponent : public juce::Component,
                          private juce::ChangeListener,
@@ -16,25 +21,36 @@ public:
     void setZoomLevel(double zoom);
     void setPixelsPerSecond(double pixels);
     
+    void setTracks(const std::vector<Track*>& tracksToShow);
+    void setTrackHeight(int height);
+    
+    void updatePlayheadPosition(double position);
+    
+    // Mouse interaction
     void mouseDown(const juce::MouseEvent& event) override;
     void mouseDrag(const juce::MouseEvent& event) override;
     void mouseUp(const juce::MouseEvent& event) override;
+    void mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& wheel) override;
 
 private:
     void changeListenerCallback(juce::ChangeBroadcaster* source) override;
     void timerCallback() override;
     
-    double getTimeAtPosition(int x) const;
-    int getPositionForTime(double time) const;
-
+    void createTrackLanes();
+    void updateTimelineRuler();
+    
     Transport* transport;
+    std::vector<Track*> tracks;
+    std::vector<std::unique_ptr<TrackLaneComponent>> trackLanes;
     
-    double visibleStartTime = 0.0;
-    double visibleDuration = 10.0;
-    double zoomLevel = 1.0;
+    TimelineViewport viewport;
+    TimelineRuler ruler;
+    
     double pixelsPerSecond = 100.0;
+    double visibleStartTime = 0.0;
+    double visibleDuration = 30.0;
     
-    bool isDraggingPlayhead = false;
+    int trackHeight = 60;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimelineComponent)
 };

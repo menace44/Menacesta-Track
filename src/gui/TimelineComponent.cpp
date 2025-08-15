@@ -1,140 +1,177 @@
+/*
+  ==============================================================================
+
+   TimelineComponent.cpp
+   Created: 15 Jan 2025
+   Author:  DAW Development Team
+
+   Main timeline component that integrates the ruler, viewport, and track lanes
+   for a complete timeline view.
+
+  ==============================================================================
+*/
+
 #include "TimelineComponent.h"
 
 TimelineComponent::TimelineComponent(Transport* transportToUse)
     : transport(transportToUse)
+    , viewport(transportToUse)
+    , ruler(transportToUse)
 {
-    jassert(transport != nullptr);
+    addAndMakeVisible(ruler);
+    addAndMakeVisible(viewport);
     
-    transport->addChangeListener(this);
-    startTimerHz(30);
+    if (transport != nullptr)
+    {
+        transport->addChangeListener(this);
+    }
     
-    setOpaque(true);
+    startTimerHz(30); // 30 FPS for smooth updates
+    
+    setSize(800, 400);
 }
 
 TimelineComponent::~TimelineComponent()
 {
-    transport->removeChangeListener(this);
-    stopTimer();
+    if (transport != nullptr)
+    {
+        transport->removeChangeListener(this);
+    }
 }
 
 void TimelineComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::black);
-    
-    auto bounds = getLocalBounds();
-    
-    // Draw grid
-    g.setColour(juce::Colours::darkgrey);
-    
-    // Vertical grid lines (measures/beats)
-    double timeStep = 0.5 / zoomLevel;
-    double startTime = visibleStartTime;
-    double endTime = visibleStartTime + visibleDuration;
-    
-    for (double t = std::floor(startTime / timeStep) * timeStep; t < endTime; t += timeStep)
-    {
-        int x = getPositionForTime(t);
-        if (x >= 0 && x < getWidth())
-        {
-            g.drawLine(x, 0, x, getHeight(), 0.5f);
-            
-            // Draw time labels
-            if (std::fmod(t, 1.0) < 0.01)
-            {
-                g.setColour(juce::Colours::lightgrey);
-                g.drawText(juce::String(t, 1) + "s", x + 2, 2, 50, 20, juce::Justification::left);
-                g.setColour(juce::Colours::darkgrey);
-            }
-        }
-    }
-    
-    // Draw playhead
-    double currentPosition = transport->getCurrentPosition();
-    int playheadX = getPositionForTime(currentPosition);
-    
-    if (playheadX >= 0 && playheadX < getWidth())
-    {
-        g.setColour(juce::Colours::red);
-        g.drawLine(playheadX, 0, playheadX, getHeight(), 2.0f);
-        
-        // Draw playhead triangle
-        juce::Path playhead;
-        playhead.addTriangle(playheadX - 5.0f, 0.0f,
-                           playheadX + 5.0f, 0.0f,
-                           playheadX, 8.0f);
-        g.fillPath(playhead);
-    }
-    
-    // Draw timeline ruler
-    g.setColour(juce::Colours::lightgrey);
-    g.fillRect(0, 0, getWidth(), 25);
-    g.setColour(juce::Colours::black);
-    g.drawText("Timeline", 10, 5, 100, 20, juce::Justification::left);
+    g.fillAll(juce::Colour(0xFF1A1A1A));
 }
 
 void TimelineComponent::resized()
 {
-    visibleDuration = getWidth() / pixelsPerSecond;
+    auto bounds = getLocalBounds();
+    
+    // Timeline ruler at the top
+    auto rulerBounds = bounds.removeFromTop(30);
+    ruler.setBounds(rulerBounds);
+    
+    // Viewport takes the remaining space
+    viewport.setBounds(bounds);
+}
+
+void TimelineComponent::setZoomLevel(double zoom)
+{
+    viewport.setZoomLevel(zoom);
+    ruler.setZoomLevel(zoom);
+}
+
+void TimelineComponent::setPixelsPerSecond(double pixels)
+{
+    pixelsPerSecond = pixels;
+    viewport.setPixelsPerSecond(pixels);
+    ruler.setPixelsPerSecond(pixels);
+}
+
+void TimelineComponent::setTracks(const std::vector<Track*>& tracksToShow)
+{
+    tracks = tracksToShow;
+    createTrackLanes();
+}
+
+void TimelineComponent::setTrackHeight(int height)
+{
+    trackHeight = height;
+    createTrackLanes();
+}
+
+void TimelineComponent::updatePlayheadPosition(double position)
+{
+    viewport.setPlayheadPosition(position);
+    ruler.setPlayheadPosition(position);
+}
+
+void TimelineComponent::mouseDown(const juce::MouseEvent& event)
+{
+    if (event.mods.isLeftButtonDown())
+    {
+        // Handle timeline clicks
+        if (event.getNumberOfClicks() == 2)
+        {
+            // Double-click to set playhead position
+            double time = ruler.getTimeAtPosition(event.x);
+            if (transport != nullptr)
+            {
+                transport->setPosition(time);
+            }
+        }
+    }
+}
+
+void TimelineComponent::mouseDrag(const juce::MouseEvent& event)
+{
+    // Handle timeline dragging
+    if (event.mods.isLeftButtonDown())
+    {
+        double time = ruler.getTimeAtPosition(event.x);
+        if (transport != nullptr)
+        {
+            transport->setPosition(time);
+        }
+    }
+}
+
+void TimelineComponent::mouseUp(const juce::MouseEvent& event)
+{
+    // Handle mouse up events
+}
+
+void TimelineComponent::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& wheel)
+{
+    if (event.mods.isCtrlDown() || event.mods.isCommandDown())
+    {
+        // Zoom with Ctrl/Cmd + wheel
+        double zoomFactor = wheel.deltaY > 0 ? 1.1 : 0.9;
+        setZoomLevel(getZoomLevel() * zoomFactor);
+    }
+    else
+    {
+        // Scroll vertically
+        viewport.mouseWheelMove(event, wheel);
+    }
 }
 
 void TimelineComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
 {
     if (source == transport)
     {
-        repaint();
+        updatePlayheadPosition(transport->getPosition());
     }
 }
 
 void TimelineComponent::timerCallback()
 {
-    repaint();
-}
-
-void TimelineComponent::mouseDown(const juce::MouseEvent& event)
-{
-    if (event.y > 25)  // Below the ruler
+    // Update playhead position during playback
+    if (transport != nullptr && transport->isPlaying())
     {
-        double newTime = getTimeAtPosition(event.x);
-        transport->setPosition(newTime);
-        isDraggingPlayhead = true;
+        updatePlayheadPosition(transport->getPosition());
     }
 }
 
-void TimelineComponent::mouseDrag(const juce::MouseEvent& event)
+void TimelineComponent::createTrackLanes()
 {
-    if (isDraggingPlayhead)
+    trackLanes.clear();
+    
+    int totalHeight = 0;
+    for (auto* track : tracks)
     {
-        double newTime = getTimeAtPosition(event.x);
-        transport->setPosition(newTime);
+        auto lane = std::make_unique<TrackLaneComponent>(*track, viewport);
+        lane->setBounds(0, totalHeight, viewport.getWidth(), trackHeight);
+        viewport.addTrackLane(lane.get());
+        totalHeight += trackHeight;
+        trackLanes.push_back(std::move(lane));
     }
+    
+    viewport.setTotalHeight(totalHeight);
 }
 
-void TimelineComponent::mouseUp(const juce::MouseEvent& event)
+double TimelineComponent::getZoomLevel() const
 {
-    isDraggingPlayhead = false;
-}
-
-double TimelineComponent::getTimeAtPosition(int x) const
-{
-    return visibleStartTime + (x / pixelsPerSecond);
-}
-
-int TimelineComponent::getPositionForTime(double time) const
-{
-    return static_cast<int>((time - visibleStartTime) * pixelsPerSecond);
-}
-
-void TimelineComponent::setZoomLevel(double zoom)
-{
-    zoomLevel = zoom;
-    pixelsPerSecond = 100.0 * zoom;
-    resized();
-    repaint();
-}
-
-void TimelineComponent::setPixelsPerSecond(double pixels)
-{
-    pixelsPerSecond = pixels;
-    resized();
-    repaint();
+    return viewport.getZoomLevel();
 }

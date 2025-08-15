@@ -59,3 +59,39 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
         repaint();
     }
 }
+
+void MainComponent::addTrack(Track::TrackType type)
+{
+    if (auto* transport = App::getInstance()->getTransport())
+    {
+        if (auto* audioEngine = transport->getAudioEngine())
+        {
+            juce::String trackName = "Track " + juce::String(trackList.getNumTracks() + 1);
+            auto* newTrack = audioEngine->addTrack(trackName, type);
+            trackList.addTrack(newTrack);
+            update();
+        }
+    }
+}
+
+void MainComponent::removeTrack(int index)
+{
+    if (auto* transport = App::getInstance()->getTransport())
+    {
+        if (auto* audioEngine = transport->getAudioEngine())
+        {
+            if (index >= 0 && index < audioEngine->getNumTracks())
+            {
+                audioEngine->removeTrack(index);
+                trackList.clearTracks();
+                
+                // Re-add remaining tracks to GUI
+                for (int i = 0; i < audioEngine->getNumTracks(); ++i)
+                {
+                    trackList.addTrack(audioEngine->getTrack(i));
+                }
+                update();
+            }
+        }
+    }
+}

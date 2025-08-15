@@ -1,54 +1,68 @@
 #pragma once
 #include <JuceHeader.h>
-#include "../recording/Recorder.h"
-#include "../plugins/PluginManager.h"
+#include "Clip.h"
+#include <vector>
+#include <memory>
 
 class Track : public juce::ChangeBroadcaster
 {
 public:
-    enum TrackType
-    {
-        AudioTrack,
-        MidiTrack
+    enum class Type {
+        Audio,
+        MIDI
     };
 
-    Track(const juce::String& name, TrackType type);
+    Track(const juce::String& name, Type type = Type::Audio);
     ~Track() override;
 
     void prepareToPlay(double sampleRate, int samplesPerBlock);
     void processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
     
-    void setVolume(float newVolume);
-    void setPan(float newPan);
-    void setMute(bool shouldMute);
-    void setSolo(bool shouldSolo);
-
-    void startRecording(const juce::File& file);
-    void stopRecording();
-    bool isRecording() const;
-
-    void loadPlugin(const juce::String& pluginIdentifier);
-    void unloadPlugin();
-
     const juce::String& getName() const { return name; }
-    TrackType getType() const { return type; }
+    void setName(const juce::String& newName) { name = newName; sendChangeMessage(); }
+    
+    Type getType() const { return type; }
+    void setType(Type newType) { type = newType; sendChangeMessage(); }
+    
+    // Clip management
+    void addClip(std::unique_ptr<Track::Clip> clip);
+    void removeClip(Track::Clip* clip);
+    const std::vector<std::unique_ptr<Track::Clip>>& getClips() const { return clips; }
+    
+    // Track controls
     float getVolume() const { return volume; }
+    void setVolume(float newVolume) { volume = newVolume; sendChangeMessage(); }
+    
     float getPan() const { return pan; }
+    void setPan(float newPan) { pan = newPan; sendChangeMessage(); }
+    
     bool isMuted() const { return muted; }
-    bool isSoloed() const { return soloed; }
+    void setMuted(bool isMuted) { muted = isMuted; sendChangeMessage(); }
+    
+    bool isSolo() const { return solo; }
+    void setSolo(bool isSolo) { solo = isSolo; sendChangeMessage(); }
+    
+    bool isArmed() const { return armed; }
+    void setArmed(bool isArmed) { armed = isArmed; sendChangeMessage(); }
+    
+    // Visual properties
+    juce::Colour getColour() const { return colour; }
+    void setColour(const juce::Colour& newColour) { colour = newColour; sendChangeMessage(); }
 
 private:
     juce::String name;
-    TrackType type;
+    Type type;
+    std::vector<std::unique_ptr<Track::Clip>> clips;
     
-    float volume = 1.0f;
+    // Track controls
+    float volume = 0.8f;
     float pan = 0.0f;
     bool muted = false;
-    bool soloed = false;
+    bool solo = false;
+    bool armed = false;
     
-    Recorder recorder;
-    juce::AudioBuffer<float> trackBuffer;
-    juce::AudioPluginInstance* plugin = nullptr;
+    // Visual properties
+    juce::Colour colour;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

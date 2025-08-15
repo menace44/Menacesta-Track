@@ -21,6 +21,8 @@ private:
     void recordButtonClicked();
     void rewindButtonClicked();
     void fastForwardButtonClicked();
+    void addTrackButtonClicked();
+    void removeTrackButtonClicked();
 
     Transport* transport;
     
@@ -29,6 +31,8 @@ private:
     juce::TextButton recordButton{"Record"};
     juce::TextButton rewindButton{"<<"};
     juce::TextButton fastForwardButton{">>"};
+    juce::TextButton addTrackButton{"Add Track"};
+    juce::TextButton removeTrackButton{"Remove Track"};
     
     juce::Label positionLabel;
     juce::Label tempoLabel;
