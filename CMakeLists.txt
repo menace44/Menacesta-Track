@@ -35,8 +35,20 @@ target_sources(CrossPlatformJUCEDAW PRIVATE
     src/gui/TimelineComponent.cpp
     src/gui/TrackListComponent.cpp
     src/gui/TrackControlPanel.cpp
+    src/gui/timeline/TimelineTrackComponent.cpp
+    src/gui/timeline/TimelineViewport.cpp
+    src/gui/timeline/TimelineRuler.cpp
+    src/gui/timeline/TimelineGrid.cpp
+    src/gui/timeline/PlayheadIndicator.cpp
+    src/gui/timeline/ClipComponent.cpp
+    src/gui/timeline/SelectionManager.cpp
+    src/gui/timeline/SnapGrid.cpp
+    src/gui/timeline/DragOperation.cpp
+    src/gui/timeline/TrackLaneComponent.cpp
+    src/gui/timeline/TrackHeightResizer.cpp
     src/tests/AudioEngineTest.cpp
     src/tests/TestRunner.cpp
+    src/gui/timeline/TrackHeightResizerTests.cpp
     src/examples/AudioEngineDemo.cpp
     src/effects/Effect.cpp
     src/effects/ReverbEffect.cpp
@@ -60,6 +72,18 @@ target_sources(CrossPlatformJUCEDAW PRIVATE
     src/gui/TimelineComponent.h
     src/gui/TrackListComponent.h
     src/gui/TrackControlPanel.h
+    src/gui/timeline/TimelineTrackComponent.h
+    src/gui/timeline/TimelineViewport.h
+    src/gui/timeline/TimelineRuler.h
+    src/gui/timeline/TimelineGrid.h
+    src/gui/timeline/PlayheadIndicator.h
+    src/gui/timeline/ClipComponent.h
+    src/gui/timeline/SelectionManager.h
+    src/gui/timeline/SnapGrid.h
+    src/gui/timeline/DragOperation.h
+    src/gui/timeline/TrackLaneComponent.h
+    src/gui/timeline/TrackHeightResizer.h
+    src/gui/timeline/HeightSnapGrid.h
     src/effects/Effect.h
     src/effects/ReverbEffect.h
     src/effects/EQEffect.h
